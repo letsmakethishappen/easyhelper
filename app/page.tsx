@@ -46,7 +46,7 @@ export default function HomePage() {
             </h1>
             
             <p className="text-xl text-gray-600 mb-12 max-w-2xl mx-auto leading-relaxed">
-              Get instant, accurate diagnostics powered by AI that's analyzed millions of repair cases. 
+              Get instant, accurate diagnostics powered by AI that&apos;s analyzed millions of repair cases. 
               Step-by-step guidance tailored to your skill level.
             </p>
 
@@ -120,7 +120,7 @@ export default function HomePage() {
               </CardHeader>
               <CardContent>
                 <CardDescription className="text-base text-gray-600 leading-relaxed">
-                  Know what's wrong before you visit the shop. Avoid unnecessary repairs and inflated estimates.
+                  Know what&apos;s wrong before you visit the shop. Avoid unnecessary repairs and inflated estimates.
                 </CardDescription>
               </CardContent>
             </Card>
@@ -169,7 +169,7 @@ export default function HomePage() {
             
             <CardContent className="p-8 space-y-6">
               <div className="bg-gray-50 p-6 rounded-2xl ml-12">
-                <p className="text-gray-800 font-medium">My car won't start this morning. It cranks but doesn't turn over.</p>
+                <p className="text-gray-800 font-medium">My car won&apos;t start this morning. It cranks but doesn&apos;t turn over.</p>
               </div>
               
               <div className="bg-blue-50 p-6 rounded-2xl mr-12">
@@ -231,7 +231,7 @@ export default function HomePage() {
               Loved by Car Owners
             </h2>
             <p className="text-xl text-gray-600">
-              Join thousands who've saved money and learned about their cars
+              Join thousands who&apos;ve saved money and learned about their cars
             </p>
           </div>
 
@@ -244,7 +244,7 @@ export default function HomePage() {
                   ))}
                 </div>
                 <p className="text-gray-700 mb-6 text-lg leading-relaxed">
-                  "Saved me $400 at the shop! The AI correctly diagnosed my alternator issue and gave me clear steps to verify it myself."
+                  &quot;Saved me $400 at the shop! The AI correctly diagnosed my alternator issue and gave me clear steps to verify it myself.&quot;
                 </p>
                 <div className="flex items-center space-x-3">
                   <div className="h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center">
@@ -266,7 +266,7 @@ export default function HomePage() {
                   ))}
                 </div>
                 <p className="text-gray-700 mb-6 text-lg leading-relaxed">
-                  "As a DIY mechanic, this tool is incredible. The parts recommendations and difficulty ratings are spot-on."
+                  &quot;As a DIY mechanic, this tool is incredible. The parts recommendations and difficulty ratings are spot-on.&quot;
                 </p>
                 <div className="flex items-center space-x-3">
                   <div className="h-10 w-10 bg-green-100 rounded-full flex items-center justify-center">
@@ -288,7 +288,7 @@ export default function HomePage() {
                   ))}
                 </div>
                 <p className="text-gray-700 mb-6 text-lg leading-relaxed">
-                  "Even as a professional mechanic, I use this for quick reference. The probability rankings are very helpful."
+                  &quot;Even as a professional mechanic, I use this for quick reference. The probability rankings are very helpful.&quot;
                 </p>
                 <div className="flex items-center space-x-3">
                   <div className="h-10 w-10 bg-purple-100 rounded-full flex items-center justify-center">
@@ -524,6 +524,7 @@ export default function HomePage() {
             </Card>
           </div>
 
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mt-16">
             <Link href="/app" className="text-gray-600 hover:text-gray-900 font-medium">Free Dashboard</Link>
             <Button size="lg" asChild className="rounded-full px-8">
               <Link href="/app">Try Free Dashboard Now</Link>
@@ -539,7 +540,7 @@ export default function HomePage() {
             Ready to Fix Your Car?
           </h2>
           <p className="text-xl text-blue-100 mb-12">
-            Join thousands of car owners who've saved money and learned about their vehicles.
+            Join thousands of car owners who&apos;ve saved money and learned about their vehicles.
           </p>
           <Button size="lg" variant="secondary" asChild className="rounded-full px-8 py-6 text-lg">
             <Link href="/auth/sign-up">
