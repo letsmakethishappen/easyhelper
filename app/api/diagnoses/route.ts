@@ -7,13 +7,13 @@ async function getUserFromSession(req: NextRequest) {
   if (!sessionToken || !supabase) {
     throw new Error('No valid session');
   }
-
+  
   const { data: { user }, error } = await supabase.auth.getUser(sessionToken);
   
   if (error || !user) {
     throw new Error('Invalid session');
   }
-
+  
   return user;
 }
 
@@ -22,6 +22,13 @@ export async function GET(req: NextRequest) {
     const user = await getUserFromSession(req);
     const { searchParams } = new URL(req.url);
     const limit = parseInt(searchParams.get('limit') || '10');
+
+    if (!supabase) {
+      return NextResponse.json(
+        { error: 'Database connection not available' },
+        { status: 500 }
+      );
+    }
 
     const { data: diagnoses, error } = await supabase
       .from('diagnoses')
