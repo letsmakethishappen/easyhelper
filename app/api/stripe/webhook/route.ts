@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
         
         // Create or update subscription record
         if (session.mode === 'subscription') {
-          const subscription = await stripe.subscriptions.retrieve(session.subscription);
+          const subscriptionResponse = await stripe.subscriptions.retrieve(session.subscription);
           
           await supabase
             .from('subscriptions')
@@ -45,10 +45,8 @@ export async function POST(req: NextRequest) {
               user_id: userId,
               stripe_customer_id: session.customer,
               stripe_subscription_id: session.subscription,
-              status: subscription.status,
-              current_period_end: subscription.current_period_end 
-                ? new Date(subscription.current_period_end * 1000).toISOString()
-                : new Date().toISOString(),
+              status: subscriptionResponse.status,
+              current_period_end: new Date((subscriptionResponse as any).current_period_end * 1000).toISOString(),
               plan_id: 'monthly' // TODO: Map from price ID
             });
         } else {
@@ -77,9 +75,7 @@ export async function POST(req: NextRequest) {
           .from('subscriptions')
           .update({
             status: subscription.status,
-            current_period_end: subscription.current_period_end 
-              ? new Date(subscription.current_period_end * 1000).toISOString()
-              : new Date().toISOString()
+            current_period_end: new Date((subscription as any).current_period_end * 1000).toISOString()
           })
           .eq('stripe_subscription_id', subscription.id);
         break;
