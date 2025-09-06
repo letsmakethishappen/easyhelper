@@ -33,7 +33,12 @@ export async function POST(req: NextRequest) {
 
     // Get or create Stripe customer
     let customerId: string;
-    
+    if (!supabase) {
+  return NextResponse.json(
+    { error: 'Database connection not available' },
+    { status: 500 }
+  );
+}
     const { data: existingCustomer } = await supabase
       .from('stripe_customers')
       .select('stripe_customer_id')
