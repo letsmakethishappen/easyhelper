@@ -140,6 +140,12 @@ export async function POST(req: NextRequest) {
     }
 
     // Get user's skill level from database
+    if (!supabase) {
+  return NextResponse.json(
+    { error: 'Database connection not available' },
+    { status: 500 }
+  );
+}
     const { data: userData } = await supabase
       .from('users')
       .select('skill_level')
@@ -151,6 +157,12 @@ export async function POST(req: NextRequest) {
     // Get vehicle info if provided
     let vehicleInfo = null;
     if (vehicleId) {
+    if (!supabase) {
+  return NextResponse.json(
+    { error: 'Database connection not available' },
+    { status: 500 }
+  );
+}
       const { data: vehicle } = await supabase
         .from('vehicles')
         .select('*')
