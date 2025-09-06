@@ -46,7 +46,9 @@ export async function POST(req: NextRequest) {
               stripe_customer_id: session.customer,
               stripe_subscription_id: session.subscription,
               status: subscription.status,
-              current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
+              current_period_end: subscription.current_period_end 
+                ? new Date(subscription.current_period_end * 1000).toISOString()
+                : new Date().toISOString(),
               plan_id: 'monthly' // TODO: Map from price ID
             });
         } else {
@@ -75,7 +77,9 @@ export async function POST(req: NextRequest) {
           .from('subscriptions')
           .update({
             status: subscription.status,
-            current_period_end: new Date(subscription.current_period_end * 1000).toISOString()
+            current_period_end: subscription.current_period_end 
+              ? new Date(subscription.current_period_end * 1000).toISOString()
+              : new Date().toISOString()
           })
           .eq('stripe_subscription_id', subscription.id);
         break;
