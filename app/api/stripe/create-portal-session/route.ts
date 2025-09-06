@@ -8,19 +8,26 @@ async function getUserFromSession(req: NextRequest) {
   if (!sessionToken || !supabase) {
     throw new Error('No valid session');
   }
-
+  
   const { data: { user }, error } = await supabase.auth.getUser(sessionToken);
   
   if (error || !user) {
     throw new Error('Invalid session');
   }
-
+  
   return user;
 }
 
 export async function POST(req: NextRequest) {
   try {
     const user = await getUserFromSession(req);
+    
+    if (!supabase) {
+      return NextResponse.json(
+        { error: 'Database connection not available' },
+        { status: 500 }
+      );
+    }
 
     // Get Stripe customer ID
     const { data: customer, error } = await supabase
@@ -43,7 +50,6 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json({ url: session.url });
-
   } catch (error: any) {
     console.error('Portal session error:', error);
     return NextResponse.json(
