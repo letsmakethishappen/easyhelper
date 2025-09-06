@@ -7,19 +7,26 @@ async function getUserFromSession(req: NextRequest) {
   if (!sessionToken || !supabase) {
     throw new Error('No valid session');
   }
-
+  
   const { data: { user }, error } = await supabase.auth.getUser(sessionToken);
   
   if (error || !user) {
     throw new Error('Invalid session');
   }
-
+  
   return user;
 }
 
 export async function GET(req: NextRequest) {
   try {
     const user = await getUserFromSession(req);
+
+    if (!supabase) {
+      return NextResponse.json(
+        { error: 'Database connection not available' },
+        { status: 500 }
+      );
+    }
 
     const { data: userData, error } = await supabase
       .from('users')
@@ -45,10 +52,17 @@ export async function GET(req: NextRequest) {
 export async function PUT(req: NextRequest) {
   try {
     const user = await getUserFromSession(req);
+
+    if (!supabase) {
+      return NextResponse.json(
+        { error: 'Database connection not available' },
+        { status: 500 }
+      );
+    }
     
     const body = await req.json();
     const { name, skillLevel, locale, units } = body;
-
+    
     const { data: userData, error } = await supabase
       .from('users')
       .update({
@@ -67,7 +81,6 @@ export async function PUT(req: NextRequest) {
       message: 'Profile updated successfully',
       user: userData 
     });
-
   } catch (error) {
     console.error('Update user error:', error);
     return NextResponse.json(
