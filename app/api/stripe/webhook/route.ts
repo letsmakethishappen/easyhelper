@@ -8,13 +8,21 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.text();
     const signature = req.headers.get('stripe-signature')!;
-
+    
     let event;
+    
     try {
       event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
     } catch (err: any) {
       console.error('Webhook signature verification failed:', err.message);
       return NextResponse.json({ error: 'Invalid signature' }, { status: 400 });
+    }
+
+    if (!supabase) {
+      return NextResponse.json(
+        { error: 'Database connection not available' },
+        { status: 500 }
+      );
     }
 
     switch (event.type) {
@@ -26,7 +34,7 @@ export async function POST(req: NextRequest) {
           console.error('No user ID in session metadata');
           break;
         }
-
+        
         // Create or update subscription record
         if (session.mode === 'subscription') {
           const subscription = await stripe.subscriptions.retrieve(session.subscription);
@@ -58,7 +66,7 @@ export async function POST(req: NextRequest) {
         }
         break;
       }
-
+      
       case 'customer.subscription.updated':
       case 'customer.subscription.deleted': {
         const subscription = event.data.object as any;
@@ -72,7 +80,7 @@ export async function POST(req: NextRequest) {
           .eq('stripe_subscription_id', subscription.id);
         break;
       }
-
+      
       case 'invoice.payment_failed': {
         const invoice = event.data.object as any;
         
@@ -82,11 +90,11 @@ export async function POST(req: NextRequest) {
           .eq('stripe_subscription_id', invoice.subscription);
         break;
       }
-
+      
       default:
         console.log(`Unhandled event type: ${event.type}`);
     }
-
+    
     return NextResponse.json({ received: true });
   } catch (error) {
     console.error('Webhook error:', error);
