@@ -7,19 +7,26 @@ async function getUserFromSession(req: NextRequest) {
   if (!sessionToken || !supabase) {
     throw new Error('No valid session');
   }
-
+  
   const { data: { user }, error } = await supabase.auth.getUser(sessionToken);
   
   if (error || !user) {
     throw new Error('Invalid session');
   }
-
+  
   return user;
 }
 
 export async function GET(req: NextRequest) {
   try {
     const user = await getUserFromSession(req);
+
+    if (!supabase) {
+      return NextResponse.json(
+        { error: 'Database connection not available' },
+        { status: 500 }
+      );
+    }
 
     const { data: vehicles, error } = await supabase
       .from('vehicles')
@@ -42,10 +49,17 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const user = await getUserFromSession(req);
+
+    if (!supabase) {
+      return NextResponse.json(
+        { error: 'Database connection not available' },
+        { status: 500 }
+      );
+    }
     
     const body = await req.json();
     const { year, make, model, trim, vin, mileage, nickname } = body;
-
+    
     if (!year || !make || !model) {
       return NextResponse.json(
         { error: 'Year, make, and model are required' },
@@ -74,7 +88,6 @@ export async function POST(req: NextRequest) {
       message: 'Vehicle added successfully',
       vehicle 
     });
-
   } catch (error: any) {
     console.error('Add vehicle error:', error);
     
