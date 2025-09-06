@@ -7,23 +7,30 @@ async function getUserFromSession(req: NextRequest) {
   if (!sessionToken || !supabase) {
     throw new Error('No valid session');
   }
-
+  
   const { data: { user }, error } = await supabase.auth.getUser(sessionToken);
   
   if (error || !user) {
     throw new Error('Invalid session');
   }
-
+  
   return user;
 }
 
 export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     const user = await getUserFromSession(req);
+
+    if (!supabase) {
+      return NextResponse.json(
+        { error: 'Database connection not available' },
+        { status: 500 }
+      );
+    }
     
     const body = await req.json();
     const { year, make, model, trim, vin, mileage, nickname } = body;
-
+    
     const { data: vehicle, error } = await supabase
       .from('vehicles')
       .update({
@@ -46,7 +53,6 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
       message: 'Vehicle updated successfully',
       vehicle 
     });
-
   } catch (error) {
     console.error('Update vehicle error:', error);
     return NextResponse.json(
@@ -60,6 +66,13 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
   try {
     const user = await getUserFromSession(req);
 
+    if (!supabase) {
+      return NextResponse.json(
+        { error: 'Database connection not available' },
+        { status: 500 }
+      );
+    }
+
     const { error } = await supabase
       .from('vehicles')
       .delete()
@@ -71,7 +84,6 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
     return NextResponse.json({ 
       message: 'Vehicle deleted successfully' 
     });
-
   } catch (error) {
     console.error('Delete vehicle error:', error);
     return NextResponse.json(
