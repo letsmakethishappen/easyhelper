@@ -19,6 +19,7 @@ import {
   Clock
 } from 'lucide-react';
 import { AppLayout } from '@/components/app-layout';
+import { useAuth } from '@/contexts/auth-context';
 
 interface RecentDiagnosis {
   id: string;
@@ -205,7 +206,7 @@ export default function AppDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="font-semibold text-blue-900 mb-1">
-                    🚀 You're in Demo Mode
+                    🚀 You&apos;re in Demo Mode
                   </p>
                   <p className="text-blue-700">
                     Sign up to save your diagnoses, add vehicles, and get unlimited access
@@ -324,7 +325,7 @@ export default function AppDashboard() {
                 <MessageSquare className="h-16 w-16 text-gray-300 mx-auto mb-6" />
                 <h3 className="font-semibold text-gray-900 mb-3 text-lg">No diagnoses yet</h3>
                 <p className="text-gray-600 mb-6 max-w-md mx-auto">
-                  Start by asking about a car problem you're experiencing. Our AI will help you diagnose the issue.
+                  Start by asking about a car problem you&apos;re experiencing. Our AI will help you diagnose the issue.
                 </p>
                 <Button asChild className="rounded-full px-6">
                   <Link href="/app/ask">Ask Your First Question</Link>
