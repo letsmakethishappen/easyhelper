@@ -1,10 +1,22 @@
 import Stripe from 'stripe';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-08-27.basil',
-});
+let stripe: Stripe | null = null;
 
-export default stripe;
+function getStripe(): Stripe {
+  if (!stripe) {
+    if (!process.env.STRIPE_SECRET_KEY) {
+      throw new Error('STRIPE_SECRET_KEY environment variable is not set');
+    }
+    
+    stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+      apiVersion: '2025-08-27.basil',
+    });
+  }
+  
+  return stripe;
+}
+
+export default getStripe;
 
 export const PLANS = {
   ONE_DAY: {
@@ -35,8 +47,10 @@ export const PLANS = {
     limits: { dailyDiagnoses: -1, tokensPerDay: -1 }
   }
 };
+
 export async function createCheckoutSession(priceId: string, customerId?: string) {
-  const session = await stripe.checkout.sessions.create({
+  const stripeInstance = getStripe();
+  const session = await stripeInstance.checkout.sessions.create({
     customer: customerId,
     payment_method_types: ['card'],
     line_items: [
@@ -49,15 +63,14 @@ export async function createCheckoutSession(priceId: string, customerId?: string
     success_url: `${process.env.NEXT_PUBLIC_APP_URL}/app/billing?success=true`,
     cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/pricing`,
   });
-
   return session;
 }
 
 export async function createCustomer(email: string, name: string) {
-  const customer = await stripe.customers.create({
+  const stripeInstance = getStripe();
+  const customer = await stripeInstance.customers.create({
     email,
     name,
   });
-
   return customer;
 }
