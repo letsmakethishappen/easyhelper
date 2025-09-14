@@ -334,14 +334,14 @@ export default function BillingPage() {
                       <span className="text-lg font-normal text-gray-500">/year</span>
                     </div>
                     <div className="text-gray-500 line-through text-sm mb-1">
-                      ${((PLANS.MONTHLY.price * 12) / 100).toFixed(2)}/year monthly price
+                      $479.88/year monthly price
                     </div>
                     <div className="text-green-600 font-semibold text-sm">
-                      Save {Math.round((1 - PLANS.ANNUAL.price / (PLANS.MONTHLY.price * 12)) * 100)}% vs monthly!
+                      Save 58% vs monthly!
                     </div>
                   </div>
                   <CardDescription className="text-gray-600">
-                    ${(PLANS.ANNUAL.price / 100 / 12).toFixed(2)}/mo (best value)
+                    $16.67/mo (best value)
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="px-6 pb-8">
