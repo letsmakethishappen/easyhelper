@@ -1,11 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
-import stripe from '@/lib/stripe';
+import getStripe from '@/lib/stripe';
 import { supabase } from '@/lib/supabase';
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
 
 export async function POST(req: NextRequest) {
   try {
+    // Get Stripe instance inside the handler
+    const stripe = getStripe();
+    
     const body = await req.text();
     const signature = req.headers.get('stripe-signature')!;
     
@@ -17,14 +20,14 @@ export async function POST(req: NextRequest) {
       console.error('Webhook signature verification failed:', err.message);
       return NextResponse.json({ error: 'Invalid signature' }, { status: 400 });
     }
-
+    
     if (!supabase) {
       return NextResponse.json(
         { error: 'Database connection not available' },
         { status: 500 }
       );
     }
-
+    
     switch (event.type) {
       case 'checkout.session.completed': {
         const session = event.data.object as any;
