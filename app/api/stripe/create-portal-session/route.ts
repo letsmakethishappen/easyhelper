@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import stripe from '@/lib/stripe';
+import getStripe from '@/lib/stripe';
 import { supabase } from '@/lib/supabase';
 
 async function getUserFromSession(req: NextRequest) {
@@ -20,6 +20,9 @@ async function getUserFromSession(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
+    // Get Stripe instance inside the handler
+    const stripe = getStripe();
+    
     const user = await getUserFromSession(req);
     
     if (!supabase) {
@@ -28,7 +31,7 @@ export async function POST(req: NextRequest) {
         { status: 500 }
       );
     }
-
+    
     // Get Stripe customer ID
     const { data: customer, error } = await supabase
       .from('stripe_customers')
