@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import stripe from '@/lib/stripe';
+import getStripe from '@/lib/stripe';
 import { supabase } from '@/lib/supabase';
 
 async function getUserFromSession(req: NextRequest) {
@@ -8,18 +8,19 @@ async function getUserFromSession(req: NextRequest) {
   if (!sessionToken || !supabase) {
     throw new Error('No valid session');
   }
-
   const { data: { user }, error } = await supabase.auth.getUser(sessionToken);
   
   if (error || !user) {
     throw new Error('Invalid session');
   }
-
   return user;
 }
 
 export async function POST(req: NextRequest) {
   try {
+    // Get Stripe instance inside the handler
+    const stripe = getStripe();
+    
     const user = await getUserFromSession(req);
     const body = await req.json();
     const { priceId } = body;
@@ -34,11 +35,12 @@ export async function POST(req: NextRequest) {
     // Get or create Stripe customer
     let customerId: string;
     if (!supabase) {
-  return NextResponse.json(
-    { error: 'Database connection not available' },
-    { status: 500 }
-  );
-}
+      return NextResponse.json(
+        { error: 'Database connection not available' },
+        { status: 500 }
+      );
+    }
+    
     const { data: existingCustomer } = await supabase
       .from('stripe_customers')
       .select('stripe_customer_id')
