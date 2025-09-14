@@ -51,11 +51,12 @@ class SimpleRateLimiter {
 
   private cleanup() {
     const now = Date.now();
-    for (const [key, entry] of this.store.entries()) {
+    // Fix: Use Array.from() to convert iterator to array for compatibility
+    Array.from(this.store.entries()).forEach(([key, entry]) => {
       if (now > entry.resetTime) {
         this.store.delete(key);
       }
-    }
+    });
   }
 }
 
