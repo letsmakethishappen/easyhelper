@@ -8,8 +8,8 @@ const PLANS = {
     name: '1-Day AI Mechanic',
     price: 999, // $9.99 in cents
     interval: null,
-    stripeProductId: 'prod_1day_pass',
-    stripePriceId: 'price_1day_pass',
+    stripeProductId: 'prod_S4pitNbnyOxFEA',
+    stripePriceId: 'price_1RAg3GG1HgZKwUFV1hPj37Kj',
     features: ['Access for 24 hours', '10 diagnoses included', 'Standard diagnostic accuracy', 'General repair instructions', 'Standard response speed'],
     limits: { dailyDiagnoses: 10, tokensPerDay: 50000 }
   },
@@ -17,8 +17,8 @@ const PLANS = {
     name: 'Monthly AI Mechanic',
     price: 3999, // $39.99 in cents
     interval: 'month' as const,
-    stripeProductId: 'prod_monthly_subscription',
-    stripePriceId: 'price_monthly_subscription',
+    stripeProductId: 'prod_S4piEle6aNyJoO',
+    stripePriceId: 'price_1RAg3GG1HgZKwUFVe9PSu00T',
     features: ['Unlimited diagnoses', 'Expert diagnostic accuracy', 'Detailed repair instructions', 'Parts recommendations', 'Saved history', 'Standard response speed'],
     limits: { dailyDiagnoses: -1, tokensPerDay: -1 }
   },
@@ -26,6 +26,8 @@ const PLANS = {
     name: 'Premium AI Mechanic',
     price: 19999, // $199.99 in cents
     interval: 'year' as const,
+    stripeProductId: 'prod_S4pid327E9z1Ye',
+    stripePriceId: 'price_1RAg3HG1HgZKwUFVfGPNEVxb',
     features: ['Unlimited diagnoses', 'Expert diagnostic accuracy', 'Expert-level repair instructions', 'Parts recommendations', 'Saved history', 'Priority response speed', 'Expert support'],
     limits: { dailyDiagnoses: -1, tokensPerDay: -1 }
   }
