@@ -26,21 +26,6 @@ export const supabaseAdmin = supabaseUrl && supabaseServiceKey
     })
   : null;
 
-// Helper function to create a client with a specific access token
-export function createClientWithToken(accessToken: string) {
-  if (!supabaseUrl || !supabaseAnonKey) {
-    throw new Error('Supabase configuration missing');
-  }
-  
-  return createClient(supabaseUrl, supabaseAnonKey, {
-    global: {
-      headers: {
-        Authorization: `Bearer ${accessToken}`
-      }
-    }
-  });
-}
-
 export type Database = {
   public: {
     Tables: {
