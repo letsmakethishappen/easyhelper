@@ -54,8 +54,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         throw new Error(errorData.error || 'Sign in failed');
       }
 
-      const data = await response.json();
-      setUser(data.user);
+      // Refetch the session to get complete user data
+      const sessionResponse = await fetch('/api/auth/session');
+      if (sessionResponse.ok) {
+        const sessionData = await sessionResponse.json();
+        setUser(sessionData.user);
+      }
       
       toast({
         title: "Welcome back!",
@@ -88,8 +92,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         throw new Error(errorData.error || 'Sign up failed');
       }
 
-      const data = await response.json();
-      setUser(data.user);
+      // Refetch the session to get complete user data
+      const sessionResponse = await fetch('/api/auth/session');
+      if (sessionResponse.ok) {
+        const sessionData = await sessionResponse.json();
+        setUser(sessionData.user);
+      }
       
       toast({
         title: "Welcome to CarHelper!",

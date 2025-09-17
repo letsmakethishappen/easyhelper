@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
     // Create user with Supabase Auth
     const data = await createUser(email, name, password);
     
-    return NextResponse.json({ 
+    const response = NextResponse.json({ 
       message: 'User created successfully',
       user: {
         id: data.user?.id,
@@ -45,6 +45,18 @@ export async function POST(req: NextRequest) {
         name: data.user?.user_metadata?.name
       }
     });
+
+    // Set session cookie with the access token
+    if (data.session?.access_token) {
+      response.cookies.set('session', data.session.access_token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 60 * 60 * 24 * 7 // 7 days
+      });
+    }
+
+    return response;
 
   } catch (error: any) {
     console.error('Sign up error:', error);
