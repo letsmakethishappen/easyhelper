@@ -46,16 +46,6 @@ export async function POST(req: NextRequest) {
       }
     });
 
-    // Set session cookie with the access token
-    if (data.session?.access_token) {
-      response.cookies.set('session', data.session.access_token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-        maxAge: 60 * 60 * 24 * 7 // 7 days
-      });
-    }
-
     return response;
 
   } catch (error: any) {
