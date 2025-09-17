@@ -1,18 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
 import { chatRateLimiter, checkRateLimit } from '@/lib/rate-limiter';
-import { supabase } from '@/lib/supabase';
-
-// Remove the top-level OpenAI initialization
+import { supabaseAdmin } from '@/lib/supabase';
 
 async function getUserFromSession(req: NextRequest) {
   const sessionToken = req.cookies.get('session')?.value;
   
-  if (!sessionToken || !supabase) {
+  if (!sessionToken || !supabaseAdmin) {
     throw new Error('No valid session');
   }
 
-  const { data: { user }, error } = await supabase.auth.getUser(sessionToken);
+  const { data: { user }, error } = await supabaseAdmin.auth.getUser(sessionToken);
   
   if (error || !user) {
     throw new Error('Invalid session');
@@ -143,13 +141,13 @@ export async function POST(req: NextRequest) {
     }
 
     // Get user's skill level from database
-    if (!supabase) {
+    if (!supabaseAdmin) {
       return NextResponse.json(
         { error: 'Database connection not available' },
         { status: 500 }
       );
     }
-    const { data: userData } = await supabase
+    const { data: userData } = await supabaseAdmin
       .from('users')
       .select('skill_level')
       .eq('id', user.id)
@@ -160,13 +158,7 @@ export async function POST(req: NextRequest) {
     // Get vehicle info if provided
     let vehicleInfo = null;
     if (vehicleId) {
-      if (!supabase) {
-        return NextResponse.json(
-          { error: 'Database connection not available' },
-          { status: 500 }
-        );
-      }
-      const { data: vehicle } = await supabase
+      const { data: vehicle } = await supabaseAdmin
         .from('vehicles')
         .select('*')
         .eq('id', vehicleId)
@@ -179,7 +171,7 @@ export async function POST(req: NextRequest) {
     // Create or get conversation
     let conversationId = body.conversationId;
     if (!conversationId) {
-      const { data: conversation, error: convError } = await supabase
+      const { data: conversation, error: convError } = await supabaseAdmin
         .from('conversations')
         .insert({
           user_id: user.id,
@@ -194,7 +186,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Save user message
-    await supabase
+    await supabaseAdmin
       .from('messages')
       .insert({
         conversation_id: conversationId,
@@ -296,7 +288,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Save assistant message
-    await supabase
+    await supabaseAdmin
       .from('messages')
       .insert({
         conversation_id: conversationId,
@@ -305,7 +297,7 @@ export async function POST(req: NextRequest) {
       });
 
     // Save diagnosis
-    await supabase
+    await supabaseAdmin
       .from('diagnoses')
       .insert({
         conversation_id: conversationId,
@@ -317,7 +309,7 @@ export async function POST(req: NextRequest) {
 
     // Update usage tracking
     const today = new Date().toISOString().split('T')[0];
-    await supabase
+    await supabaseAdmin
       .from('usage')
       .upsert({
         user_id: user.id,
