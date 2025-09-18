@@ -17,7 +17,7 @@ async function getUserFromSession(req: NextRequest) {
   return user;
 }
 
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const user = await getUserFromSession(req);
 
@@ -31,6 +31,8 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
     const body = await req.json();
     const { year, make, model, trim, vin, mileage, nickname } = body;
     
+    const { id } = await params;
+    
     const { data: vehicle, error } = await supabase
       .from('vehicles')
       .update({
@@ -42,7 +44,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
         mileage: mileage ? parseInt(mileage) : null,
         nickname: nickname || null
       })
-      .eq('id', params.id)
+      .eq('id', id)
       .eq('user_id', user.id) // Ensure user owns this vehicle
       .select()
       .single();
@@ -62,7 +64,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   }
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const user = await getUserFromSession(req);
 
@@ -73,10 +75,12 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
       );
     }
 
+    const { id } = await params;
+
     const { error } = await supabase
       .from('vehicles')
       .delete()
-      .eq('id', params.id)
+      .eq('id', id)
       .eq('user_id', user.id); // Ensure user owns this vehicle
 
     if (error) throw error;

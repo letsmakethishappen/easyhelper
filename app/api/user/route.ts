@@ -1,14 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabase';
 
 async function getUserFromSession(req: NextRequest) {
   const sessionToken = req.cookies.get('session')?.value;
   
-  if (!sessionToken || !supabase) {
+  if (!sessionToken || !supabaseAdmin) {
     throw new Error('No valid session');
   }
   
-  const { data: { user }, error } = await supabase.auth.getUser(sessionToken);
+  const { data: { user }, error } = await supabaseAdmin.auth.getUser(sessionToken);
   
   if (error || !user) {
     throw new Error('Invalid session');
@@ -21,14 +21,14 @@ export async function GET(req: NextRequest) {
   try {
     const user = await getUserFromSession(req);
 
-    if (!supabase) {
+    if (!supabaseAdmin) {
       return NextResponse.json(
         { error: 'Database connection not available' },
         { status: 500 }
       );
     }
 
-    const { data: userData, error } = await supabase
+    const { data: userData, error } = await supabaseAdmin
       .from('users')
       .select('*')
       .eq('id', user.id)
@@ -36,8 +36,8 @@ export async function GET(req: NextRequest) {
 
     if (error) throw error;
 
-    // Don't return sensitive data
-    const { ...safeUser } = userData;
+    // Don't return sensitive data - exclude any sensitive fields if needed
+    const safeUser = userData;
     
     return NextResponse.json({ user: safeUser });
   } catch (error) {
@@ -53,7 +53,7 @@ export async function PUT(req: NextRequest) {
   try {
     const user = await getUserFromSession(req);
 
-    if (!supabase) {
+    if (!supabaseAdmin) {
       return NextResponse.json(
         { error: 'Database connection not available' },
         { status: 500 }
@@ -63,7 +63,7 @@ export async function PUT(req: NextRequest) {
     const body = await req.json();
     const { name, skillLevel, locale, units } = body;
     
-    const { data: userData, error } = await supabase
+    const { data: userData, error } = await supabaseAdmin
       .from('users')
       .update({
         name,
