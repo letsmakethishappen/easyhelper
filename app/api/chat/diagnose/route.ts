@@ -78,7 +78,7 @@ JSON Schema (always include):
 }`;
 
 export async function POST(req: NextRequest) {
-  const clientIp = req.ip || req.headers.get('x-forwarded-for') || 'unknown';
+  const clientIp = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'unknown';
   
   // Rate limiting
   const rateLimitCheck = await checkRateLimit(chatRateLimiter, clientIp);
