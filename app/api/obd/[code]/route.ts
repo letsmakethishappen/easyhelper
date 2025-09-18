@@ -50,9 +50,10 @@ const OBD_CODES: Record<string, any> = {
   }
 };
 
-export async function GET(req: NextRequest, { params }: { params: { code: string } }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ code: string }> }) {
   try {
-    const code = params.code.toUpperCase();
+    const { code: rawCode } = await params;
+    const code = rawCode.toUpperCase();
     
     const obdData = OBD_CODES[code];
     
