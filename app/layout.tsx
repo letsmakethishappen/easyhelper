@@ -15,7 +15,6 @@ export const metadata: Metadata = {
   creator: 'CarHelper.ai',
   publisher: 'CarHelper.ai',
   robots: 'index, follow',
-  viewport: 'width=device-width, initial-scale=1',
   metadataBase: new URL('https://carhelper.ai'),
   openGraph: {
     title: 'CarHelper.ai - AI-Powered Automotive Diagnostics',
@@ -40,6 +39,11 @@ export const metadata: Metadata = {
     images: ['/og-image.png'],
   }
 };
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+}
 
 export default function RootLayout({
   children,
